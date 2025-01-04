@@ -129,6 +129,7 @@ int main() {
         cin >> choice;
 
         switch (choice) {
+          
             case 1: {
                 if (roomCount < MAX_ROOMS) {
                     int rno, rent;
