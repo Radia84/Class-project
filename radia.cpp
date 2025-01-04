@@ -1,6 +1,6 @@
 #include <iostream>
-#include <string.h>
-#define max 100
+#include <cstring>
+#define MAX_ROOMS 100
 using namespace std;
 
 class Room {
@@ -10,7 +10,7 @@ protected:
     char ac;
     int roomNumber;
     int rent;
-    int status;
+    int status; // 0 = available, 1 = reserved
 
 public:
     Room() {
@@ -22,52 +22,22 @@ public:
         ac = 'N';
     }
 
-    virtual void displayRoomDetails() const {
+    void initializeRoom(int rno, char acType, char comfortType, char sizeType, int dailyRent) {
+        roomNumber = rno;
+        ac = acType;
+        type = comfortType;
+        stype = sizeType;
+        rent = dailyRent;
+        status = 0; // Set as available by default
+    }
+
+    void displayRoomDetails() const {
         cout << "\nRoom Number: " << roomNumber;
         cout << "\nType AC/Non-AC (A/N): " << ac;
         cout << "\nType Comfort (S/N): " << type;
         cout << "\nType Size (B/S): " << stype;
         cout << "\nRent: " << rent;
-    }
-
-    Room addRoom(int rno,Room&room) {
-
-        room.roomNumber = rno;
-        cout << "\nType AC/Non-AC (A/N): ";
-        cin >> room.ac;
-        cout << "\nType Comfort (S/N): ";
-        cin >> room.type;
-        cout << "\nType Size (B/S): ";
-        cin >> room.stype;
-        cout << "\nDaily Rent: ";
-        cin >> room.rent;
-        room.status = 0;
-
-        cout << "\nRoom Added Successfully!";
-        cin.get();
-        return room;
-    }
-
-    void searchRoom(int rno, Room rooms[], int count) const {
-        bool found = false;
-        for (int i = 0; i < count; i++) {
-            if (rooms[i].getRoomNumber() == rno) {
-                found = true;
-                cout << "\nRoom Details\n";
-                if (rooms[i].getStatus() == 1) {
-                    cout << "\nRoom is Reserved";
-                } else {
-                    cout << "\nRoom is Available";
-                }
-                rooms[i].displayRoomDetails();
-                cin.get();
-                break;
-            }
-        }
-        if (!found) {
-            cout << "\nRoom not found";
-            cin.get();
-        }
+        cout << "\nStatus: " << (status == 1 ? "Reserved" : "Available") << "\n";
     }
 
     int getRoomNumber() const {
@@ -94,7 +64,9 @@ protected:
     int bookingID;
 
 public:
-    CustomerRoom() : paymentAdvance(0.0), bookingID(0) {
+    CustomerRoom() {
+        paymentAdvance = 0.0;
+        bookingID = 0;
         strcpy(customerName, "");
         strcpy(customerAddress, "");
         strcpy(customerPhone, "");
@@ -102,128 +74,141 @@ public:
         strcpy(to_date, "");
     }
 
-    void checkIn(int rno, Room rooms[], int &count) {
+    void checkIn(int rno, Room rooms[], int count) {
         bool found = false;
         for (int i = 0; i < count; i++) {
             if (rooms[i].getRoomNumber() == rno) {
                 found = true;
                 if (rooms[i].getStatus() == 1) {
-                    cout << "\nRoom is Already Booked.";
-                    cin.get();
+                    cout << "\nRoom is Already Reserved.\n";
                     return;
                 }
-                cout << "\nEnter Booking ID: ";
+
+                // Input booking details
+                cout << "\nEnter Booking Details:";
+                cout << "\nBooking ID: ";
                 cin >> bookingID;
-                cout << "\nEnter Customer Name: ";
-                cin >> customerName;
-                cout << "\nEnter Address: ";
-                cin >> customerAddress;
-                cout << "\nEnter Phone: ";
+                cin.ignore();
+                cout << "Customer Name: ";
+                cin.getline(customerName, 100);
+                cout << "Address: ";
+                cin.getline(customerAddress, 100);
+                cout << "Phone: ";
                 cin >> customerPhone;
-                cout << "\nEnter From Date: ";
+                cout << "From Date: ";
                 cin >> from_date;
-                cout << "\nEnter To Date: ";
+                cout << "To Date: ";
                 cin >> to_date;
-                cout << "\nEnter Advance Payment: ";
+                cout << "Advance Payment: ";
                 cin >> paymentAdvance;
-                rooms[i].setStatus(1);
-                cout << "\nCustomer Checked-In Successfully!";
-                cin.get();
-                break;
+
+                rooms[i].setStatus(1); // Reserve the room
+                cout << "\nCustomer Checked-In Successfully!\n";
+                return;
             }
         }
         if (!found) {
-            cout << "\nRoom Not Found.";
-            cin.get();
-        }
-    }
-
-    void displayRoomDetails() const  {
-        Room::displayRoomDetails();
-        if (status == 1) {
-            cout << "\nCustomer Name: " << customerName;
-            cout << "\nAddress: " << customerAddress;
-            cout << "\nPhone: " << customerPhone;
-            cout << "\nFrom Date: " << from_date;
-            cout << "\nTo Date: " << to_date;
-            cout << "\nAdvance Payment: " << paymentAdvance;
+            cout << "\nRoom Not Found.\n";
         }
     }
 };
 
 int main() {
-    int opt, rno;
-    Room rooms[max];
-    int count = 0;
-    CustomerRoom crm;
+    Room rooms[MAX_ROOMS];
+    int roomCount = 0;
 
+    int choice;
     do {
         system("cls");
         cout << "\n### Hotel Management System ###";
-        cout << "\n1. Manage Rooms";
-        cout << "\n2. Check-In";
-        cout << "\n3. Exit";
-        cout << "\n\nEnter Option: ";
-        cin >> opt;
+        cout << "\n1. Add Room";
+        cout << "\n2. Search Room";
+        cout << "\n3. Check-In";
+        cout << "\n4. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
 
-        switch (opt) {
+        switch (choice) {
             case 1: {
-                int choice;
-                do {
-                    system("cls");
-                    cout << "\n### Manage Rooms ###";
-                    cout << "\n1. Add Room";
-                    cout << "\n2. Search Room";
-                    cout << "\n3. Back to Main Menu";
-                    cout << "\n\nEnter Option: ";
-                    cin >> choice;
+                if (roomCount < MAX_ROOMS) {
+                    int rno, rent;
+                    char ac, type, size;
 
-                    if (choice == 1) {
-                        cout << "\nEnter Room Number: ";
-                        cin >> rno;
-                        bool exists = false;
-                        for (int i = 0; i < count; i++) {
-                            if (rooms[i].getRoomNumber() == rno) {
-                                exists = true;
-                                break;
-                            }
+                    cout << "\nEnter Room Number: ";
+                    cin >> rno;
+                    cout << "Type AC/Non-AC (A/N): ";
+                    cin >> ac;
+                    cout << "Type Comfort (S/N): ";
+                    cin >> type;
+                    cout << "Type Size (B/S): ";
+                    cin >> size;
+                    cout << "Daily Rent: ";
+                    cin >> rent;
+
+                    bool exists = false;
+                    for (int i = 0; i < roomCount; i++) {
+                        if (rooms[i].getRoomNumber() == rno) {
+                            exists = true;
+                            break;
                         }
-                        if (exists) {
-                            cout << "\nRoom Number Already Exists!";
-                            cin.get(); // Wait for user input
-                        } else {
-                       rooms[count].addRoom(rno, rooms[count]);
-                            count++;
-                        }
-                    } else if (choice == 2) {
-                        cout << "\nEnter Room Number: ";
-                        cin >> rno;
-                        rooms[0].searchRoom(rno, rooms, count);
                     }
-                } while (choice != 3);
+
+                    if (exists) {
+                        cout << "\nRoom Number Already Exists.\n";
+                    } else {
+                        rooms[roomCount].initializeRoom(rno, ac, type, size, rent);
+                        roomCount++;
+                        cout << "\nRoom Added Successfully.\n";
+                    }
+                } else {
+                    cout << "\nMaximum Room Limit Reached.\n";
+                }
                 break;
             }
 
-            case 2:
-                if (count == 0) {
-                    cout << "\nNo Room Data Available. Please Add Rooms First.";
-                    cin.get(); // Wait for user input
-                } else {
-                    cout << "\nEnter Room Number: ";
-                    cin >> rno;
-                    crm.checkIn(rno, rooms, count);
+            case 2: {
+                int rno;
+                cout << "\nEnter Room Number to Search: ";
+                cin >> rno;
+
+                bool found = false;
+                for (int i = 0; i < roomCount; i++) {
+                    if (rooms[i].getRoomNumber() == rno) {
+                        found = true;
+                        cout << "\nRoom Found:";
+                        rooms[i].displayRoomDetails();
+                        break;
+                    }
+                }
+                if (!found) {
+                    cout << "\nRoom Not Found.\n";
                 }
                 break;
+            }
 
-            case 3:
-                cout << "\nThank You for Using the Software!";
+            case 3: {
+                if (roomCount == 0) {
+                    cout << "\nNo Rooms Available. Add Rooms First.\n";
+                } else {
+                    int rno;
+                    cout << "\nEnter Room Number for Check-In: ";
+                    cin >> rno;
+
+                    CustomerRoom customer;
+                    customer.checkIn(rno, rooms, roomCount);
+                }
+                break;
+            }
+
+            case 4:
+                cout << "\nThank you for using the Hotel Management System.\n";
                 break;
 
             default:
-                cout << "\nPlease Enter Correct Option.";
-                break;
+                cout << "\nInvalid Choice. Try Again.\n";
         }
-    } while (opt != 3);
+        system("pause");
+    } while (choice != 4);
 
     return 0;
 }
