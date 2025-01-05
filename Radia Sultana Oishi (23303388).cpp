@@ -28,7 +28,7 @@ public:
         type = comfortType;
         stype = sizeType;
         rent = dailyRent;
-        status = 0; // Set as available by default
+        status = 0; 
     }
 
     void displayRoomDetails() const {
@@ -84,7 +84,7 @@ public:
                     return;
                 }
 
-                // Input booking details
+                
                 cout << "\nEnter Booking Details:";
                 cout << "\nBooking ID: ";
                 cin >> bookingID;
@@ -102,7 +102,7 @@ public:
                 cout << "Advance Payment: ";
                 cin >> paymentAdvance;
 
-                rooms[i].setStatus(1); // Reserve the room
+                rooms[i].setStatus(1); 
                 cout << "\nCustomer Checked-In Successfully!\n";
                 return;
             }
