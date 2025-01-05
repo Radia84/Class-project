@@ -2,7 +2,6 @@
 #include <cstring>
 #define MAX_ROOMS 100
 using namespace std;
-
 class Room {
 protected:
     char type;
@@ -32,24 +31,21 @@ public:
     }
 
     void displayRoomDetails() const {
-        cout << "\nRoom Number: " << roomNumber;
-        cout << "\nType AC/Non-AC (A/N): " << ac;
-        cout << "\nType Comfort (S/N): " << type;
-        cout << "\nType Size (B/S): " << stype;
-        cout << "\nRent: " << rent;
-        cout << "\nStatus: " << (status == 1 ? "Reserved" : "Available") << "\n";
+        cout <<"\nRoom Number: "<<roomNumber;
+        cout <<"\nType AC/Non-AC (A/N): "<<ac;
+        cout <<"\nType Comfort (S/N): "<<type;
+        cout <<"\nType Size (B/S): "<<stype;
+        cout <<"\nRent: " << rent;
+        cout <<"\nStatus: " << (status == 1 ?"Reserved" :"Available")<<"\n";
     }
-
     int getRoomNumber() const {
         return roomNumber;
     }
-
     int getStatus() const {
         return status;
     }
-
     void setStatus(int stat) {
-        status = stat;
+        status =stat;
     }
 };
 
@@ -73,63 +69,58 @@ public:
         strcpy(from_date, "");
         strcpy(to_date, "");
     }
-
     void checkIn(int rno, Room rooms[], int count) {
         bool found = false;
         for (int i = 0; i < count; i++) {
-            if (rooms[i].getRoomNumber() == rno) {
+            if (rooms[i].getRoomNumber() ==rno) {
                 found = true;
-                if (rooms[i].getStatus() == 1) {
-                    cout << "\nRoom is Already Reserved.\n";
+                if (rooms[i].getStatus()== 1) {
+                    cout <<"\nRoom is Already Reserved.\n";
                     return;
                 }
-
                 
-                cout << "\nEnter Booking Details:";
-                cout << "\nBooking ID: ";
-                cin >> bookingID;
+                cout <<"\nEnter Booking Details:";
+                cout <<"\nBooking ID: ";
+                cin >>bookingID;
                 cin.ignore();
-                cout << "Customer Name: ";
+                cout <<"Customer Name: ";
                 cin.getline(customerName, 100);
-                cout << "Address: ";
+                cout <<"Address: ";
                 cin.getline(customerAddress, 100);
-                cout << "Phone: ";
-                cin >> customerPhone;
-                cout << "From Date: ";
-                cin >> from_date;
-                cout << "To Date: ";
-                cin >> to_date;
-                cout << "Advance Payment: ";
-                cin >> paymentAdvance;
+                cout <<"Phone: ";
+                cin >>customerPhone;
+                cout <<"From Date: ";
+                cin >>from_date;
+                cout <<"To Date: ";
+                cin >>to_date;
+                cout <<"Advance Payment: ";
+                cin >>paymentAdvance;
 
                 rooms[i].setStatus(1); 
-                cout << "\nCustomer Checked-In Successfully!\n";
+                cout <<"\nCustomer Checked-In Successfully!\n";
                 return;
             }
         }
         if (!found) {
-            cout << "\nRoom Not Found.\n";
+            cout <<"\nRoom Not Found.\n";
         }
     }
 };
-
 int main() {
     Room rooms[MAX_ROOMS];
     int roomCount = 0;
-
     int choice;
     do {
         system("cls");
-        cout << "\n### Hotel Management System ###";
+        cout <<"\n### Hotel Management System ###";
         cout << "\n1. Add Room";
-        cout << "\n2. Search Room";
-        cout << "\n3. Check-In";
-        cout << "\n4. Exit";
+        cout <<"\n2. Search Room";
+        cout <<"\n3. Check-In";
+        cout <<"\n4. Exit";
         cout << "\nEnter your choice: ";
-        cin >> choice;
+        cin >>choice;
 
         switch (choice) {
-          
             case 1: {
                 if (roomCount < MAX_ROOMS) {
                     int rno, rent;
@@ -145,7 +136,6 @@ int main() {
                     cin >> size;
                     cout << "Daily Rent: ";
                     cin >> rent;
-
                     bool exists = false;
                     for (int i = 0; i < roomCount; i++) {
                         if (rooms[i].getRoomNumber() == rno) {
@@ -153,7 +143,6 @@ int main() {
                             break;
                         }
                     }
-
                     if (exists) {
                         cout << "\nRoom Number Already Exists.\n";
                     } else {
@@ -166,12 +155,10 @@ int main() {
                 }
                 break;
             }
-
             case 2: {
                 int rno;
                 cout << "\nEnter Room Number to Search: ";
                 cin >> rno;
-
                 bool found = false;
                 for (int i = 0; i < roomCount; i++) {
                     if (rooms[i].getRoomNumber() == rno) {
@@ -186,7 +173,6 @@ int main() {
                 }
                 break;
             }
-
             case 3: {
                 if (roomCount == 0) {
                     cout << "\nNo Rooms Available. Add Rooms First.\n";
@@ -194,7 +180,6 @@ int main() {
                     int rno;
                     cout << "\nEnter Room Number for Check-In: ";
                     cin >> rno;
-
                     CustomerRoom customer;
                     customer.checkIn(rno, rooms, roomCount);
                 }
@@ -202,11 +187,11 @@ int main() {
             }
 
             case 4:
-                cout << "\nThank you for using the Hotel Management System.\n";
+                cout <<"\nThank you for using the Hotel Management System.\n";
                 break;
 
             default:
-                cout << "\nInvalid Choice. Try Again.\n";
+                cout <<"\nInvalid Choice. Try Again.\n";
         }
         system("pause");
     } while (choice != 4);
