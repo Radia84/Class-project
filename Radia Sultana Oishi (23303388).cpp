@@ -10,7 +10,7 @@ protected:
     char ac;
     int roomNumber;
     int rent;
-    int status; // 0 = available, 1 = reserved
+    int status; 
 
 public:
     Room() {
